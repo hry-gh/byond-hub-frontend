@@ -30,7 +30,6 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          BASE_PATH: /${{ github.event.repository.name }}
           VITE_API_URL: ${{ vars.API_URL }}
 
       - name: Copy index.html to 404.html for SPA routing
