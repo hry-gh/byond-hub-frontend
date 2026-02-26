@@ -1,145 +1,153 @@
 @import "tailwindcss";
 
 @theme {
-  --color-void: #05080f;
-  --color-panel: rgba(12, 20, 35, 0.85);
-  --color-panel-border: rgba(45, 65, 95, 0.5);
-  --color-accent: #3b82f6;
-  --color-accent-dim: #1e40af;
-  --color-text: #c9d1dc;
-  --color-text-dim: #5c6a7e;
-  --color-highlight: #f0f4f8;
+  --color-light: #161618;
+  --color-lightgray: #393639;
+  --color-gray: #646464;
+  --color-darkgray: #d4d4d4;
+  --color-dark: #ebebec;
+  --color-secondary: #99f;
+  --color-tertiary: #84a59d;
+  --color-highlight: rgba(143, 159, 169, 0.15);
 }
-
-@font-face {
-  font-family: "IBM Plex Mono";
-  src: url("https://fonts.gstatic.com/s/ibmplexmono/v19/-F6qfjptAgt5VM-kVkqdyU8n3oQIwl1FgsAXHNlYzg.woff2")
-    format("woff2");
-  font-weight: 400;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "IBM Plex Mono";
-  src: url("https://fonts.gstatic.com/s/ibmplexmono/v19/-F6pfjptAgt5VM-kVkqdyU8n1ioa2HdgregdFOFh.woff2")
-    format("woff2");
-  font-weight: 500;
-  font-display: swap;
-}
-
 
 body {
-  @apply m-0;
-  font-family: "IBM Plex Mono", monospace;
+  margin: 0;
+  font-family: Verdana, Geneva, sans-serif;
   font-size: 14px;
-  background: var(--color-void);
-  color: var(--color-text);
+  background-color: var(--color-light);
+  color: var(--color-darkgray);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
 }
 
-
-/* Panel */
-.panel {
-  background: var(--color-panel);
-  border: 1px solid var(--color-panel-border);
-}
-
-/* Server row */
-.server-row {
-  background: var(--color-panel);
-  border: 1px solid var(--color-panel-border);
-}
-
-/* Links */
 a {
-  color: var(--color-accent);
+  font-weight: 600;
   text-decoration: none;
+  color: var(--color-secondary);
+  transition: color 0.2s ease;
 }
 
 a:hover {
-  text-decoration: underline;
+  color: var(--color-tertiary);
 }
 
-/* Buttons */
+.panel {
+  background-color: var(--color-highlight);
+  border: 1px solid var(--color-lightgray);
+  border-radius: 5px;
+}
+
+.server-row {
+  background-color: var(--color-highlight);
+  border: 1px solid var(--color-lightgray);
+  border-radius: 5px;
+}
+
 .btn {
-  font-family: "IBM Plex Mono", monospace;
+  font-family: Verdana, Geneva, sans-serif;
   font-size: 12px;
+  font-weight: 600;
   padding: 6px 12px;
   background: transparent;
-  border: 1px solid var(--color-panel-border);
-  color: var(--color-text);
+  border: 1px solid var(--color-lightgray);
+  border-radius: 5px;
+  color: var(--color-darkgray);
   text-decoration: none;
-  transition: all 0.15s ease;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .btn:hover {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
-  text-decoration: none;
+  background-color: var(--color-highlight);
+  border-color: var(--color-gray);
+  color: var(--color-dark);
 }
 
 .btn-primary {
-  background: var(--color-accent-dim);
-  border-color: var(--color-accent);
-  color: var(--color-highlight);
+  background-color: var(--color-secondary);
+  border-color: var(--color-secondary);
+  color: var(--color-light);
 }
 
 .btn-primary:hover {
-  background: var(--color-accent);
-  color: white;
+  background-color: #aaf;
+  border-color: #aaf;
+  color: var(--color-light);
 }
 
-/* Checkbox */
 input[type="checkbox"] {
   appearance: none;
-  width: 14px;
-  height: 14px;
-  background: transparent;
-  border: 1px solid var(--color-panel-border);
+  width: 16px;
+  height: 16px;
+  background-color: var(--color-light);
+  border: 1px solid var(--color-lightgray);
+  border-radius: 3px;
   cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
 }
 
 input[type="checkbox"]:checked {
-  background: var(--color-accent-dim);
-  border-color: var(--color-accent);
+  background-color: var(--color-secondary);
+  border-color: var(--color-secondary);
 }
 
 input[type="checkbox"]:checked::after {
-  content: "✓";
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 10px;
-  line-height: 14px;
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 4px;
+  height: 8px;
+  border: solid var(--color-light);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
 }
 
-/* Stat label */
+h1, h2, h3 {
+  color: var(--color-dark);
+  font-weight: normal;
+  margin: 0;
+}
+
+h1 {
+  font-size: 1.4rem;
+}
+
+h2 {
+  font-size: 1.12rem;
+}
+
 .stat {
-  color: var(--color-text-dim);
-  font-size: 12px;
+  color: var(--color-gray);
+  font-size: 13px;
 }
 
 .stat-value {
-  color: var(--color-highlight);
-  font-weight: 500;
+  color: var(--color-dark);
+  font-weight: 600;
 }
 
-/* Rank */
 .rank {
-  color: var(--color-text-dim);
-  font-size: 12px;
+  color: var(--color-gray);
+  font-size: 13px;
   min-width: 28px;
 }
 
-/* Player count */
 .players {
-  font-size: 12px;
-  color: var(--color-accent);
+  font-size: 13px;
+  color: var(--color-secondary);
 }
 
-/* Dim text */
 .dim {
-  color: var(--color-text-dim);
+  color: var(--color-gray);
+}
+
+code {
+  font-family: Menlo, ui-monospace, monospace;
+  font-size: 0.9em;
+  background-color: var(--color-lightgray);
+  padding: 0.1rem 0.2rem;
+  border-radius: 3px;
 }

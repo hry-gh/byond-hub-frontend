@@ -51,7 +51,8 @@ function App() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
       <header className="mb-4">
-        <h1 className="text-[var(--color-highlight)] text-lg font-medium mb-1">
+        <h1 className="flex items-center gap-2">
+          <img src="/ss13.png" alt="" width={24} height={24} />
           SS13 Hub
         </h1>
       </header>

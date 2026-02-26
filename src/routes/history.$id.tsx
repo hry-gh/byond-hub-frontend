@@ -1,6 +1,5 @@
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { API_URL } from "../api";
 import {
   Area,
   AreaChart,
@@ -11,6 +10,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { API_URL } from "../api";
 
 export const Route = createFileRoute("/history/$id")({
   component: RouteComponent,
@@ -92,12 +92,10 @@ function RouteComponent() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
       <header className="mb-4">
-        <Link to="/" className="dim text-sm hover:text-[var(--color-text)]">
+        <Link to="/" className="text-sm">
           ← Back
         </Link>
-        <h1 className="text-[var(--color-highlight)] text-lg font-medium mt-4 mb-1">
-          {server?.name ?? "Server History"}
-        </h1>
+        <h1 className="mt-4 mb-1">{server?.name ?? "Server History"}</h1>
         <p className="dim text-sm">{server?.players} players online</p>
       </header>
 
@@ -147,41 +145,41 @@ function RouteComponent() {
 
           {historyData && historyData.length > 0 && (
             <div className="panel p-4">
-              <h2 className="text-sm dim mb-3">Player History</h2>
+              <h2 className="dim mb-3">Player History</h2>
               <ResponsiveContainer width="100%" height={200}>
                 <AreaChart data={historyData}>
                   <XAxis
                     dataKey="time"
-                    tick={{ fill: "#5c6a7e", fontSize: 10 }}
-                    axisLine={{ stroke: "#2d415f" }}
+                    tick={{ fill: "#646464", fontSize: 10 }}
+                    axisLine={{ stroke: "#393639" }}
                     tickLine={false}
                     interval="preserveStartEnd"
                     minTickGap={50}
                   />
                   <YAxis
-                    tick={{ fill: "#5c6a7e", fontSize: 12 }}
-                    axisLine={{ stroke: "#2d415f" }}
+                    tick={{ fill: "#646464", fontSize: 12 }}
+                    axisLine={{ stroke: "#393639" }}
                     tickLine={false}
                     width={40}
                   />
                   <Tooltip
-                    cursor={{ stroke: "#3b82f6", strokeWidth: 1 }}
+                    cursor={{ stroke: "#99f", strokeWidth: 1 }}
                     contentStyle={{
-                      background: "#0c1423",
-                      border: "1px solid #2d415f",
-                      borderRadius: 4,
+                      background: "#161618",
+                      border: "1px solid #393639",
+                      borderRadius: 5,
                       fontSize: 12,
                     }}
-                    labelStyle={{ color: "#c9d1dc" }}
-                    itemStyle={{ color: "#3b82f6" }}
+                    labelStyle={{ color: "#d4d4d4" }}
+                    itemStyle={{ color: "#99f" }}
                     formatter={(value) => [`${value} players`, ""]}
                   />
                   <Area
                     type="monotone"
                     dataKey="players"
-                    stroke="#3b82f6"
-                    fill="#1e40af"
-                    fillOpacity={0.3}
+                    stroke="#99f"
+                    fill="#99f"
+                    fillOpacity={0.2}
                   />
                 </AreaChart>
               </ResponsiveContainer>
@@ -189,68 +187,68 @@ function RouteComponent() {
           )}
 
           <div className="panel p-4">
-            <h2 className="text-sm dim mb-3">Players by Day</h2>
+            <h2 className="dim mb-3">Players by Day</h2>
             <ResponsiveContainer width="100%" height={160}>
               <BarChart data={weekdayData}>
                 <XAxis
                   dataKey="day"
-                  tick={{ fill: "#5c6a7e", fontSize: 12 }}
-                  axisLine={{ stroke: "#2d415f" }}
+                  tick={{ fill: "#646464", fontSize: 12 }}
+                  axisLine={{ stroke: "#393639" }}
                   tickLine={false}
                 />
                 <YAxis
-                  tick={{ fill: "#5c6a7e", fontSize: 12 }}
-                  axisLine={{ stroke: "#2d415f" }}
+                  tick={{ fill: "#646464", fontSize: 12 }}
+                  axisLine={{ stroke: "#393639" }}
                   tickLine={false}
                   width={40}
                 />
                 <Tooltip
-                  cursor={{ fill: "rgba(59, 130, 246, 0.1)" }}
+                  cursor={{ fill: "rgba(153, 153, 255, 0.1)" }}
                   contentStyle={{
-                    background: "#0c1423",
-                    border: "1px solid #2d415f",
-                    borderRadius: 4,
+                    background: "#161618",
+                    border: "1px solid #393639",
+                    borderRadius: 5,
                     fontSize: 12,
                   }}
-                  labelStyle={{ color: "#c9d1dc" }}
-                  itemStyle={{ color: "#3b82f6" }}
+                  labelStyle={{ color: "#d4d4d4" }}
+                  itemStyle={{ color: "#99f" }}
                   formatter={(value) => [`${value} players`, "Avg"]}
                 />
-                <Bar dataKey="players" fill="#1e40af" radius={[2, 2, 0, 0]} />
+                <Bar dataKey="players" fill="#99f" radius={[2, 2, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
 
           <div className="panel p-4">
-            <h2 className="text-sm dim mb-3">Players by Hour</h2>
+            <h2 className="dim mb-3">Players by Hour</h2>
             <ResponsiveContainer width="100%" height={160}>
               <BarChart data={hourlyData}>
                 <XAxis
                   dataKey="hour"
-                  tick={{ fill: "#5c6a7e", fontSize: 10 }}
-                  axisLine={{ stroke: "#2d415f" }}
+                  tick={{ fill: "#646464", fontSize: 10 }}
+                  axisLine={{ stroke: "#393639" }}
                   tickLine={false}
                   interval={5}
                 />
                 <YAxis
-                  tick={{ fill: "#5c6a7e", fontSize: 12 }}
-                  axisLine={{ stroke: "#2d415f" }}
+                  tick={{ fill: "#646464", fontSize: 12 }}
+                  axisLine={{ stroke: "#393639" }}
                   tickLine={false}
                   width={40}
                 />
                 <Tooltip
-                  cursor={{ fill: "rgba(59, 130, 246, 0.1)" }}
+                  cursor={{ fill: "rgba(153, 153, 255, 0.1)" }}
                   contentStyle={{
-                    background: "#0c1423",
-                    border: "1px solid #2d415f",
-                    borderRadius: 4,
+                    background: "#161618",
+                    border: "1px solid #393639",
+                    borderRadius: 5,
                     fontSize: 12,
                   }}
-                  labelStyle={{ color: "#c9d1dc" }}
-                  itemStyle={{ color: "#3b82f6" }}
+                  labelStyle={{ color: "#d4d4d4" }}
+                  itemStyle={{ color: "#99f" }}
                   formatter={(value) => [`${value} players`, "Avg"]}
                 />
-                <Bar dataKey="players" fill="#1e40af" radius={[2, 2, 0, 0]} />
+                <Bar dataKey="players" fill="#99f" radius={[2, 2, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
