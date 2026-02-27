@@ -176,14 +176,19 @@ function App() {
           <img src="/ss13.png" alt="" width={24} height={24} />
           SS13 Hub
         </h1>
-        <SettingsDropdown
-          showStatus={showStatus}
-          setShowStatus={setShowStatus}
-          show18Plus={show18Plus}
-          setShow18Plus={setShow18Plus}
-          showOffline={showOffline}
-          setShowOffline={setShowOffline}
-        />
+        <div className="flex items-center gap-2">
+          <Link to="/stats" className="btn">
+            Global
+          </Link>
+          <SettingsDropdown
+            showStatus={showStatus}
+            setShowStatus={setShowStatus}
+            show18Plus={show18Plus}
+            setShow18Plus={setShow18Plus}
+            showOffline={showOffline}
+            setShowOffline={setShowOffline}
+          />
+        </div>
       </header>
 
       <div className="flex gap-8 mb-4">
