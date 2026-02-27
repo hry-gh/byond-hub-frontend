@@ -50,7 +50,7 @@ function RouteComponent() {
   const [period, setPeriod] = useState<Period>("week");
   const [server, setServer] = useState<Server>();
   const [stats, setStats] = useState<ServerStats>();
-  const [loading, setLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true);
 
   useEffect(() => {
     fetch(`${API_URL}/servers/${id}`)
@@ -59,11 +59,10 @@ function RouteComponent() {
   }, [id]);
 
   useEffect(() => {
-    setLoading(true);
     fetch(`${API_URL}/servers/${id}/stats?period=${period}`)
       .then((res) => res.json())
       .then((data) => setStats(data))
-      .finally(() => setLoading(false));
+      .finally(() => setInitialLoading(false));
   }, [id, period]);
 
   const weekdayData = stats?.weekday_averages.map((avg, i) => ({
@@ -112,7 +111,7 @@ function RouteComponent() {
         ))}
       </div>
 
-      {loading ? (
+      {initialLoading ? (
         <div className="panel p-4 dim">Loading stats...</div>
       ) : !stats ? (
         <div className="panel p-4 dim">No data available</div>
@@ -180,6 +179,7 @@ function RouteComponent() {
                     stroke="#99f"
                     fill="#99f"
                     fillOpacity={0.2}
+                    isAnimationActive={false}
                   />
                 </AreaChart>
               </ResponsiveContainer>
@@ -214,7 +214,7 @@ function RouteComponent() {
                   itemStyle={{ color: "#99f" }}
                   formatter={(value) => [`${value} players`, "Avg"]}
                 />
-                <Bar dataKey="players" fill="#99f" radius={[2, 2, 0, 0]} />
+                <Bar dataKey="players" fill="#99f" radius={[2, 2, 0, 0]} isAnimationActive={false} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -248,7 +248,7 @@ function RouteComponent() {
                   itemStyle={{ color: "#99f" }}
                   formatter={(value) => [`${value} players`, "Avg"]}
                 />
-                <Bar dataKey="players" fill="#99f" radius={[2, 2, 0, 0]} />
+                <Bar dataKey="players" fill="#99f" radius={[2, 2, 0, 0]} isAnimationActive={false} />
               </BarChart>
             </ResponsiveContainer>
           </div>

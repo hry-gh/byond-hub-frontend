@@ -123,7 +123,7 @@ function App() {
                     </Link>
                     <a
                       href={`byond://BYOND.world.${server.world_id}`}
-                      className="btn btn-primary"
+                      className="btn btn-primary hidden sm:block"
                     >
                       Connect
                     </a>
