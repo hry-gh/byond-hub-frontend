@@ -35,4 +35,5 @@ export type GameServer = {
   topic_status?: TopicStatus;
   players: number;
   updated_at: string;
+  online: boolean;
 };

@@ -52,6 +52,14 @@ function App() {
       ?.split("=")[1];
     return saved ? JSON.parse(saved) : false;
   });
+  const [showOffline, setShowOffline] = useState(() => {
+    if (typeof document === "undefined") return false;
+    const saved = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("showOffline="))
+      ?.split("=")[1];
+    return saved ? JSON.parse(saved) : false;
+  });
 
   useEffect(() => {
     setCookie("showStatus", JSON.stringify(showStatus));
@@ -62,13 +70,19 @@ function App() {
   }, [show18Plus]);
 
   useEffect(() => {
+    setCookie("showOffline", JSON.stringify(showOffline));
+  }, [showOffline]);
+
+  useEffect(() => {
     fetch(`${API_URL}/servers`)
       .then((data) => data.json().then((json) => setData(json)))
       .finally(() => setLoading(false));
   }, []);
 
   const filteredData = data?.filter(
-    (server) => show18Plus || !server.status.includes("18+"),
+    (server) =>
+      (show18Plus || !server.status.includes("18+")) &&
+      (showOffline || server.online),
   );
 
   const totalPlayers =
@@ -131,6 +145,14 @@ function App() {
           />
           <span className="dim">Show 18+ servers</span>
         </label>
+        <label className="flex items-center gap-2 cursor-pointer w-fit text-sm">
+          <input
+            type="checkbox"
+            checked={showOffline}
+            onChange={(e) => setShowOffline(e.target.checked)}
+          />
+          <span className="dim">Show offline servers</span>
+        </label>
       </div>
 
       <div className="space-y-2">
@@ -140,7 +162,12 @@ function App() {
           <div className="panel p-4 dim">No servers online</div>
         ) : (
           filteredData
-            ?.sort((a, b) => b.players - a.players)
+            ?.sort((a, b) => {
+              // Offline servers go to the bottom
+              if (a.online !== b.online) return a.online ? -1 : 1;
+              // Then sort by player count
+              return b.players - a.players;
+            })
             .map((server, index) => {
               const [ip, port] = server.address.split(":");
               return (
@@ -298,23 +325,28 @@ function App() {
                   </div>
 
                   <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2 sm:gap-4 shrink-0">
-                    <div className="flex flex-row sm:flex-col items-center sm:items-end gap-2 sm:gap-1">
-                      <span className="players flex items-center gap-1">
-                        <Users size={14} />
-                        {server.players}
-                        {server.topic_status?.popcap != null &&
-                          server.topic_status.popcap !== "" &&
-                          `/${server.topic_status.popcap}`}
-                      </span>
-                      {server.topic_status?.admins != null &&
-                        server.topic_status.admins !== "" &&
-                        server.topic_status.admins !== 0 && (
-                          <span className="players flex items-center gap-1">
-                            <Shield size={14} />
-                            {server.topic_status.admins}
-                          </span>
-                        )}
-                    </div>
+                    {server.online && (
+                      <div className="flex flex-row sm:flex-col items-center sm:items-end gap-2 sm:gap-1">
+                        <span className="players flex items-center gap-1">
+                          <Users size={14} />
+                          {server.players}
+                          {server.topic_status?.popcap != null &&
+                            server.topic_status.popcap !== "" &&
+                            `/${server.topic_status.popcap}`}
+                        </span>
+                        {server.topic_status?.admins != null &&
+                          server.topic_status.admins !== "" &&
+                          server.topic_status.admins !== 0 && (
+                            <span className="players flex items-center gap-1">
+                              <Shield size={14} />
+                              {server.topic_status.admins}
+                            </span>
+                          )}
+                      </div>
+                    )}
+                    {!server.online && (
+                      <span className="dim text-sm">Offline</span>
+                    )}
                     <div className="flex gap-2">
                       <Link
                         to="/s/$ip/$port"
@@ -323,12 +355,18 @@ function App() {
                       >
                         Info
                       </Link>
-                      <a
-                        href={`byond://${server.topic_status?.public_address ?? server.address}`}
-                        className="btn btn-primary hidden sm:block"
-                      >
-                        Connect
-                      </a>
+                      {server.online ? (
+                        <a
+                          href={`byond://${server.topic_status?.public_address ?? server.address}`}
+                          className="btn btn-primary hidden sm:block"
+                        >
+                          Connect
+                        </a>
+                      ) : (
+                        <span className="btn btn-disabled hidden sm:block opacity-50 cursor-not-allowed">
+                          Connect
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>

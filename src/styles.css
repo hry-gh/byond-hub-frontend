@@ -132,7 +132,6 @@ h2 {
 .rank {
   color: var(--color-gray);
   font-size: 13px;
-  min-width: 28px;
 }
 
 .players {
