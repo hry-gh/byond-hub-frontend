@@ -13,6 +13,7 @@ import {
 } from "recharts";
 import { API_URL } from "../api";
 import type { GameServer } from "../types";
+import { formatDuration, formatShuttleTimer } from "../utils";
 
 export const Route = createFileRoute("/s/$ip/$port")({
   component: RouteComponent,
@@ -37,14 +38,6 @@ type ServerStats = {
 };
 
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-const formatDuration = (deciseconds: number) => {
-  const totalSeconds = Math.floor(deciseconds / 10);
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  if (hours > 0) return `${hours}h ${minutes}m`;
-  return `${minutes}m`;
-};
 
 const securityColors = {
   red: "#f87171",
@@ -107,7 +100,7 @@ function RouteComponent() {
     ts?.security_level;
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
+    <div className="max-w-4xl mx-auto px-4 py-12">
       <header className="mb-4">
         <Link to="/" className="text-sm">
           ← Back
@@ -188,6 +181,17 @@ function RouteComponent() {
                     ? "Green"
                     : ts.security_level.charAt(0).toUpperCase() +
                       ts.security_level.slice(1)}
+                </span>
+              </div>
+            )}
+            {ts.shuttle_mode && ts.shuttle_mode !== "idle" && (
+              <div>
+                <span className="stat">Shuttle </span>
+                <span className="stat-value text-yellow-400">
+                  {ts.shuttle_mode}
+                  {ts.shuttle_timer != null && ts.shuttle_timer > 0 && (
+                    <span> ({formatShuttleTimer(ts.shuttle_timer)})</span>
+                  )}
                 </span>
               </div>
             )}

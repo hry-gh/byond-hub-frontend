@@ -1,3 +1,16 @@
+export type ShuttleMode =
+  | "idle"
+  | "igniting"
+  | "recalled"
+  | "called"
+  | "docked"
+  | "stranded"
+  | "disabled"
+  | "escape"
+  | "endgame: game over"
+  | "recharging"
+  | "landing";
+
 export type TopicStatus = {
   mode?: string;
   map_name?: string;
@@ -9,6 +22,8 @@ export type TopicStatus = {
   version?: string;
   popcap?: number | "";
   admins?: number | "";
+  shuttle_mode?: ShuttleMode;
+  shuttle_timer?: number;
 };
 
 export type GameServer = {

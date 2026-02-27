@@ -5,6 +5,12 @@ import { Shield, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { API_URL } from "../api";
 import type { GameServer } from "../types";
+import {
+  formatDuration,
+  formatRelativeTime,
+  formatShuttleTimer,
+  parseAsUTC,
+} from "../utils";
 
 export const Route = createFileRoute("/")({ component: App });
 
@@ -68,15 +74,6 @@ function App() {
   const totalPlayers =
     filteredData?.reduce((total, server) => total + server.players, 0) ?? 0;
 
-  // Ensure timestamps are parsed as UTC (API returns UTC timestamps)
-  const parseAsUTC = (timestamp: string) => {
-    // If timestamp doesn't have timezone info, treat as UTC
-    if (!timestamp.endsWith("Z") && !timestamp.includes("+")) {
-      return new Date(`${timestamp}Z`);
-    }
-    return new Date(timestamp);
-  };
-
   const lastUpdated = filteredData?.length
     ? new Date(
         Math.max(
@@ -84,25 +81,6 @@ function App() {
         ),
       )
     : null;
-
-  const formatRelativeTime = (date: Date) => {
-    const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
-    if (seconds < 60) return `${seconds}s ago`;
-    const minutes = Math.floor(seconds / 60);
-    if (minutes < 60) return `${minutes}m ago`;
-    const hours = Math.floor(minutes / 60);
-    if (hours < 24) return `${hours}h ago`;
-    const days = Math.floor(hours / 24);
-    return `${days}d ago`;
-  };
-
-  const formatDuration = (deciseconds: number) => {
-    const totalSeconds = Math.floor(deciseconds / 10);
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    if (hours > 0) return `${hours}h ${minutes}m`;
-    return `${minutes}m`;
-  };
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
@@ -291,6 +269,27 @@ function App() {
                                     )}
                                 </div>
                               )}
+                              {server.topic_status.shuttle_mode &&
+                                server.topic_status.shuttle_mode !== "idle" && (
+                                  <div className="dim text-sm">
+                                    Shuttle:{" "}
+                                    <span className="text-yellow-400">
+                                      {server.topic_status.shuttle_mode}
+                                    </span>
+                                    {server.topic_status.shuttle_timer !=
+                                      null &&
+                                      server.topic_status.shuttle_timer > 0 && (
+                                        <span className="text-yellow-400">
+                                          {" "}
+                                          (
+                                          {formatShuttleTimer(
+                                            server.topic_status.shuttle_timer,
+                                          )}
+                                          )
+                                        </span>
+                                      )}
+                                  </div>
+                                )}
                             </>
                           )}
                         </div>
@@ -298,8 +297,8 @@ function App() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-4 shrink-0">
-                    <div className="flex flex-col items-end gap-1">
+                  <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2 sm:gap-4 shrink-0">
+                    <div className="flex flex-row sm:flex-col items-center sm:items-end gap-2 sm:gap-1">
                       <span className="players flex items-center gap-1">
                         <Users size={14} />
                         {server.players}
