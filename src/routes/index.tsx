@@ -1,8 +1,8 @@
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Shield, Users } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Settings, Shield, Users } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { API_URL } from "../api";
 import type { GameServer } from "../types";
 import {
@@ -32,6 +32,79 @@ const extractDiscordUrl = (status: string): string | null => {
   }
   return null;
 };
+
+function SettingsDropdown({
+  showStatus,
+  setShowStatus,
+  show18Plus,
+  setShow18Plus,
+  showOffline,
+  setShowOffline,
+}: {
+  showStatus: boolean;
+  setShowStatus: (v: boolean) => void;
+  show18Plus: boolean;
+  setShow18Plus: (v: boolean) => void;
+  showOffline: boolean;
+  setShowOffline: (v: boolean) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  return (
+    <div className="relative" ref={dropdownRef}>
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="btn flex items-center gap-2"
+      >
+        <Settings size={16} />
+        <span>Filters</span>
+      </button>
+      {open && (
+        <div className="absolute top-full right-0 mt-1 panel p-3 space-y-2 z-10 min-w-48 !bg-light">
+          <label className="flex items-center gap-2 cursor-pointer w-fit text-sm">
+            <input
+              type="checkbox"
+              checked={showStatus}
+              onChange={(e) => setShowStatus(e.target.checked)}
+            />
+            <span className="dim">Show hub status</span>
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer w-fit text-sm">
+            <input
+              type="checkbox"
+              checked={show18Plus}
+              onChange={(e) => setShow18Plus(e.target.checked)}
+            />
+            <span className="dim">Show 18+ servers</span>
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer w-fit text-sm">
+            <input
+              type="checkbox"
+              checked={showOffline}
+              onChange={(e) => setShowOffline(e.target.checked)}
+            />
+            <span className="dim">Show offline servers</span>
+          </label>
+        </div>
+      )}
+    </div>
+  );
+}
 
 function App() {
   const [data, setData] = useState<GameServer[]>();
@@ -98,11 +171,19 @@ function App() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
-      <header className="mb-4">
+      <header className="mb-4 flex items-center justify-between">
         <h1 className="flex items-center gap-2">
           <img src="/ss13.png" alt="" width={24} height={24} />
           SS13 Hub
         </h1>
+        <SettingsDropdown
+          showStatus={showStatus}
+          setShowStatus={setShowStatus}
+          show18Plus={show18Plus}
+          setShow18Plus={setShow18Plus}
+          showOffline={showOffline}
+          setShowOffline={setShowOffline}
+        />
       </header>
 
       <div className="flex gap-8 mb-4">
@@ -126,33 +207,6 @@ function App() {
                 : "—"}
           </span>
         </div>
-      </div>
-
-      <div className="mb-6 space-y-2">
-        <label className="flex items-center gap-2 cursor-pointer w-fit text-sm">
-          <input
-            type="checkbox"
-            checked={showStatus}
-            onChange={(e) => setShowStatus(e.target.checked)}
-          />
-          <span className="dim">Show hub status</span>
-        </label>
-        <label className="flex items-center gap-2 cursor-pointer w-fit text-sm">
-          <input
-            type="checkbox"
-            checked={show18Plus}
-            onChange={(e) => setShow18Plus(e.target.checked)}
-          />
-          <span className="dim">Show 18+ servers</span>
-        </label>
-        <label className="flex items-center gap-2 cursor-pointer w-fit text-sm">
-          <input
-            type="checkbox"
-            checked={showOffline}
-            onChange={(e) => setShowOffline(e.target.checked)}
-          />
-          <span className="dim">Show offline servers</span>
-        </label>
       </div>
 
       <div className="space-y-2">
