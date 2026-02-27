@@ -68,9 +68,20 @@ function App() {
   const totalPlayers =
     filteredData?.reduce((total, server) => total + server.players, 0) ?? 0;
 
+  // Ensure timestamps are parsed as UTC (API returns UTC timestamps)
+  const parseAsUTC = (timestamp: string) => {
+    // If timestamp doesn't have timezone info, treat as UTC
+    if (!timestamp.endsWith("Z") && !timestamp.includes("+")) {
+      return new Date(`${timestamp}Z`);
+    }
+    return new Date(timestamp);
+  };
+
   const lastUpdated = filteredData?.length
     ? new Date(
-        Math.max(...filteredData.map((s) => new Date(s.updated_at).getTime())),
+        Math.max(
+          ...filteredData.map((s) => parseAsUTC(s.updated_at).getTime()),
+        ),
       )
     : null;
 
@@ -94,7 +105,7 @@ function App() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
+    <div className="max-w-4xl mx-auto px-4 py-12">
       <header className="mb-4">
         <h1 className="flex items-center gap-2">
           <img src="/ss13.png" alt="" width={24} height={24} />
@@ -159,7 +170,7 @@ function App() {
                   key={server.address}
                   className="server-row p-3 flex items-center justify-between gap-4"
                 >
-                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                  <div className="flex items-start gap-3 min-w-0 flex-1">
                     <span className="rank">{index + 1}</span>
                     <div className="min-w-0 flex-1">
                       {showStatus ? (
@@ -169,13 +180,14 @@ function App() {
                         />
                       ) : (
                         <div className="space-y-1">
-                          <div className="flex items-center gap-x-2 gap-y-1 flex-wrap">
+                          <div className="flex items-start gap-x-2 gap-y-1">
                             {server.topic_status?.version?.includes("/tg/") && (
                               <img
                                 src="/tgstation.png"
                                 alt=""
                                 width={16}
                                 height={16}
+                                className="mt-0.5 shrink-0"
                               />
                             )}
                             {server.topic_status?.version?.includes(
@@ -186,35 +198,33 @@ function App() {
                                 alt=""
                                 width={16}
                                 height={16}
+                                className="mt-0.5 shrink-0"
                               />
                             )}
-                            <span className="font-bold">{server.name}</span>
-                            {(server.status.includes("18+") ||
-                              extractDiscordUrl(server.status)) && (
-                              <span className="flex items-center gap-1 shrink-0">
-                                {server.status.includes("18+") && (
-                                  <span className="text-xs px-1.5 py-0.5 rounded bg-red-900 text-red-200">
-                                    18+
-                                  </span>
-                                )}
-                                {(() => {
-                                  const discordUrl = extractDiscordUrl(
-                                    server.status,
-                                  );
-                                  return discordUrl ? (
-                                    <a
-                                      href={discordUrl}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="text-xs px-1.5 py-0.5 rounded bg-indigo-900 text-indigo-200 hover:bg-indigo-800"
-                                      title="Discord"
-                                    >
-                                      <FontAwesomeIcon icon={faDiscord} />
-                                    </a>
-                                  ) : null;
-                                })()}
-                              </span>
-                            )}
+                            <span>
+                              <span className="font-bold">{server.name}</span>
+                              {server.status.includes("18+") && (
+                                <span className="text-xs px-1.5 h-5 ml-2 rounded bg-red-900 text-red-200 inline-flex items-center align-middle">
+                                  18+
+                                </span>
+                              )}
+                              {(() => {
+                                const discordUrl = extractDiscordUrl(
+                                  server.status,
+                                );
+                                return discordUrl ? (
+                                  <a
+                                    href={discordUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-xs px-1.5 h-5 ml-1 rounded bg-indigo-900 text-indigo-200 hover:bg-indigo-800 inline-flex items-center align-middle"
+                                    title="Discord"
+                                  >
+                                    <FontAwesomeIcon icon={faDiscord} />
+                                  </a>
+                                ) : null;
+                              })()}
+                            </span>
                           </div>
                           {server.topic_status && (
                             <>
