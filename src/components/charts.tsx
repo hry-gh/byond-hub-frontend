@@ -8,6 +8,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { parseAsUTC } from "../utils";
 
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -55,7 +56,7 @@ export function StatsOverview({ stats }: { stats: StatsData }) {
 
 export function PlayerHistoryChart({ history }: { history: HistoryPoint[] }) {
   const data = history.map((point) => {
-    const date = new Date(point.timestamp);
+    const date = parseAsUTC(point.timestamp);
     return {
       time: date.toLocaleString(undefined, {
         month: "short",
