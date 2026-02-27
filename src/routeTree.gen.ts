@@ -10,43 +10,43 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as HistoryIdRouteImport } from './routes/history.$id'
+import { Route as SIpPortRouteImport } from './routes/s.$ip.$port'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const HistoryIdRoute = HistoryIdRouteImport.update({
-  id: '/history/$id',
-  path: '/history/$id',
+const SIpPortRoute = SIpPortRouteImport.update({
+  id: '/s/$ip/$port',
+  path: '/s/$ip/$port',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/history/$id': typeof HistoryIdRoute
+  '/s/$ip/$port': typeof SIpPortRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/history/$id': typeof HistoryIdRoute
+  '/s/$ip/$port': typeof SIpPortRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/history/$id': typeof HistoryIdRoute
+  '/s/$ip/$port': typeof SIpPortRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/history/$id'
+  fullPaths: '/' | '/s/$ip/$port'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/history/$id'
-  id: '__root__' | '/' | '/history/$id'
+  to: '/' | '/s/$ip/$port'
+  id: '__root__' | '/' | '/s/$ip/$port'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  HistoryIdRoute: typeof HistoryIdRoute
+  SIpPortRoute: typeof SIpPortRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -58,11 +58,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/history/$id': {
-      id: '/history/$id'
-      path: '/history/$id'
-      fullPath: '/history/$id'
-      preLoaderRoute: typeof HistoryIdRouteImport
+    '/s/$ip/$port': {
+      id: '/s/$ip/$port'
+      path: '/s/$ip/$port'
+      fullPath: '/s/$ip/$port'
+      preLoaderRoute: typeof SIpPortRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -70,7 +70,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  HistoryIdRoute: HistoryIdRoute,
+  SIpPortRoute: SIpPortRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
