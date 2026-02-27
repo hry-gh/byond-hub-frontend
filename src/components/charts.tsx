@@ -171,10 +171,25 @@ export function PlayersByHourChart({
 }: {
   hourlyAverages: number[];
 }) {
-  const data = hourlyAverages.map((avg, i) => ({
-    hour: `${i}:00`,
-    players: Math.round(avg * 10) / 10,
-  }));
+  const offsetHours = -new Date().getTimezoneOffset() / 60;
+
+  const data = hourlyAverages.map((_, i) => {
+    const utcHour = (i - offsetHours + 24) % 24;
+    const wholeHour = Math.floor(utcHour);
+    const nextHour = (wholeHour + 1) % 24;
+    const fraction = utcHour - wholeHour;
+
+    const avg =
+      fraction === 0
+        ? hourlyAverages[wholeHour]
+        : hourlyAverages[wholeHour] * (1 - fraction) +
+          hourlyAverages[nextHour] * fraction;
+
+    return {
+      hour: `${i}:00`,
+      players: Math.round(avg * 10) / 10,
+    };
+  });
 
   return (
     <div className="panel p-4">
