@@ -159,7 +159,7 @@ function App() {
   );
 
   const totalPlayers =
-    data?.filter((server) => server.online).reduce((total, server) => total + server.players, 0) ?? 0;
+    filteredData?.filter((server) => server.online).reduce((total, server) => total + server.players, 0) ?? 0;
 
   const lastUpdated = filteredData?.length
     ? new Date(
