@@ -3,7 +3,7 @@ import { join } from "node:path";
 
 const API_URL = process.env.VITE_API_URL || "https://hub.cm-ss13.com";
 const DIST_DIR = "dist";
-const SITE_URL = process.env.SITE_URL || "https://hub.cm-ss13.com";
+const SITE_URL = process.env.SITE_URL || "https://hub.harry.live";
 
 type GameServer = {
   address: string;
@@ -40,7 +40,7 @@ function generateMetaTags(server: GameServer): string {
 
   return `
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="${title} - SS13 Hub" />
+    <meta property="og:title" content="${title.length > 56 ? `${title.substring(0, 55)}…` : title} - SS13 Hub" />
     <meta property="og:description" content="${description}" />
     <meta property="og:url" content="${url}" />
     <meta property="og:site_name" content="SS13 Hub" />
