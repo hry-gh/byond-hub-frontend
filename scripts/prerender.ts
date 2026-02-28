@@ -44,6 +44,7 @@ function generateMetaTags(server: GameServer): string {
     <meta property="og:description" content="${description}" />
     <meta property="og:url" content="${url}" />
     <meta property="og:site_name" content="SS13 Hub" />
+    <meta property="og:image" content="/ss13.png" />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="${title} - SS13 Hub" />
     <meta name="twitter:description" content="${description}" />
@@ -115,6 +116,7 @@ async function main() {
     <meta property="og:title" content="Global Statistics - SS13 Hub" />
     <meta property="og:description" content="Player statistics across all SS13 servers" />
     <meta property="og:url" content="${SITE_URL}/stats" />
+    <meta property="og:image" content="/ss13.png" />
     <meta property="og:site_name" content="SS13 Hub" />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="Global Statistics - SS13 Hub" />
