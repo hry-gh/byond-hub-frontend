@@ -185,8 +185,13 @@ export function PlayersByHourChart({
         : hourlyAverages[wholeHour] * (1 - fraction) +
           hourlyAverages[nextHour] * fraction;
 
+    const dateForHour = new Date();
+    dateForHour.setHours(i, 0, 0, 0);
+
     return {
-      hour: `${i}:00`,
+      hour: dateForHour.toLocaleString(undefined, {
+        hour: "numeric",
+      }),
       players: Math.round(avg * 10) / 10,
     };
   });
