@@ -36,6 +36,10 @@ function StatsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    document.title = "Global Statistics - SS13 Hub";
+  }, []);
+
+  useEffect(() => {
     fetch(`${API_URL}/stats?period=${period}`)
       .then((res) => res.json())
       .then((data) => setStats(data))

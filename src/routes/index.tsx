@@ -152,6 +152,10 @@ function App() {
       .finally(() => setLoading(false));
   }, []);
 
+  useEffect(() => {
+    document.title = "SS13 Hub";
+  }, []);
+
   const filteredData = data?.filter(
     (server) =>
       (show18Plus || !server.status.includes("18+")) &&
@@ -159,7 +163,9 @@ function App() {
   );
 
   const totalPlayers =
-    filteredData?.filter((server) => server.online).reduce((total, server) => total + server.players, 0) ?? 0;
+    filteredData
+      ?.filter((server) => server.online)
+      .reduce((total, server) => total + server.players, 0) ?? 0;
 
   const lastUpdated = filteredData?.length
     ? new Date(

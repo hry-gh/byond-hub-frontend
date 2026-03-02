@@ -55,6 +55,12 @@ function RouteComponent() {
   }, [ip, port]);
 
   useEffect(() => {
+    document.title = server?.name
+      ? `${server.name} - SS13 Hub`
+      : "Server Info - SS13 Hub";
+  }, [server?.name]);
+
+  useEffect(() => {
     fetch(`${API_URL}/servers/${ip}/${port}/stats?period=${period}`)
       .then((res) => res.json())
       .then((data) => setStats(data))
@@ -76,22 +82,38 @@ function RouteComponent() {
         <Link to="/" className="text-sm">
           &larr; Back
         </Link>
-        <h1 className="mt-4 mb-1">{server?.name ?? "Server Info"}</h1>
-        <p className="dim text-sm">
-          {server?.players}
-          {server?.topic_status?.popcap != null &&
-            server.topic_status.popcap !== "" &&
-            `/${server.topic_status.popcap}`}{" "}
-          players online
-        </p>
-        {server?.topic_status?.admins != null &&
-          server.topic_status.admins !== "" &&
-          server.topic_status.admins !== 0 && (
-            <p className="dim text-sm flex items-center gap-1">
-              <Shield size={14} />
-              {server.topic_status.admins} admins online
+        <div className="flex items-start justify-between gap-4 mt-4">
+          <div>
+            <h1 className="mb-1">{server?.name ?? "Server Info"}</h1>
+            <p className="dim text-sm">
+              {server?.players}
+              {server?.topic_status?.popcap != null &&
+                server.topic_status.popcap !== "" &&
+                `/${server.topic_status.popcap}`}{" "}
+              players online
             </p>
-          )}
+            {server?.topic_status?.admins != null &&
+              server.topic_status.admins !== "" &&
+              server.topic_status.admins !== 0 && (
+                <p className="dim text-sm flex items-center gap-1">
+                  <Shield size={14} />
+                  {server.topic_status.admins} admins online
+                </p>
+              )}
+          </div>
+          {server?.online ? (
+            <a
+              href={`byond://${server.topic_status?.public_address ?? server.address}`}
+              className="btn btn-primary"
+            >
+              Connect
+            </a>
+          ) : server ? (
+            <span className="btn btn-disabled opacity-50 cursor-not-allowed">
+              Connect
+            </span>
+          ) : null}
+        </div>
       </header>
 
       {hasTopicInfo && ts && (
