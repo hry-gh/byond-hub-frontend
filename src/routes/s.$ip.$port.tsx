@@ -1,4 +1,5 @@
-import { createFileRoute, Link, useParams } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { createFileRoute, useParams, useRouter } from "@tanstack/react-router";
 import { Eye, EyeOff, Shield } from "lucide-react";
 import { useEffect, useState } from "react";
 import { API_URL } from "../api";
@@ -42,30 +43,31 @@ const securityColors = {
 
 function RouteComponent() {
   const { ip, port } = useParams({ from: "/s/$ip/$port" });
+  const router = useRouter();
   const [period, setPeriod] = useState<Period>("week");
-  const [server, setServer] = useState<GameServer>();
-  const [stats, setStats] = useState<ServerStats>();
-  const [initialLoading, setInitialLoading] = useState(true);
   const [showFullTopic, setShowFullTopic] = useState(false);
 
-  useEffect(() => {
-    fetch(`${API_URL}/servers/${ip}/${port}`)
-      .then((res) => res.json())
-      .then((data) => setServer(data));
-  }, [ip, port]);
+  const { data: server } = useQuery({
+    queryKey: ["server", ip, port],
+    queryFn: () =>
+      fetch(`${API_URL}/servers/${ip}/${port}`).then(
+        (res) => res.json() as Promise<GameServer>,
+      ),
+  });
+
+  const { data: stats, isLoading: initialLoading } = useQuery({
+    queryKey: ["serverStats", ip, port, period],
+    queryFn: () =>
+      fetch(`${API_URL}/servers/${ip}/${port}/stats?period=${period}`).then(
+        (res) => res.json() as Promise<ServerStats>,
+      ),
+  });
 
   useEffect(() => {
     document.title = server?.name
       ? `${server.name} - SS13 Hub`
       : "Server Info - SS13 Hub";
   }, [server?.name]);
-
-  useEffect(() => {
-    fetch(`${API_URL}/servers/${ip}/${port}/stats?period=${period}`)
-      .then((res) => res.json())
-      .then((data) => setStats(data))
-      .finally(() => setInitialLoading(false));
-  }, [ip, port, period]);
 
   const ts = server?.topic_status;
   const mapName = ts?.map_name ?? ts?.map;
@@ -79,9 +81,13 @@ function RouteComponent() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
       <header className="mb-4">
-        <Link to="/" className="text-sm">
+        <button
+          type="button"
+          onClick={() => router.history.back()}
+          className="text-sm text-[#99f] hover:underline cursor-pointer"
+        >
           &larr; Back
-        </Link>
+        </button>
         <div className="flex items-start justify-between gap-4 mt-4">
           <div>
             <h1 className="mb-1">{server?.name ?? "Server Info"}</h1>

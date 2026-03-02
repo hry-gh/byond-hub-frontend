@@ -1,4 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { API_URL } from "../api";
 import {
@@ -31,27 +32,31 @@ type GlobalStats = {
 };
 
 function StatsPage() {
+  const router = useRouter();
   const [period, setPeriod] = useState<Period>("week");
-  const [stats, setStats] = useState<GlobalStats>();
-  const [loading, setLoading] = useState(true);
+
+  const { data: stats, isLoading: loading } = useQuery({
+    queryKey: ["globalStats", period],
+    queryFn: () =>
+      fetch(`${API_URL}/stats?period=${period}`).then(
+        (res) => res.json() as Promise<GlobalStats>,
+      ),
+  });
 
   useEffect(() => {
     document.title = "Global Statistics - SS13 Hub";
   }, []);
 
-  useEffect(() => {
-    fetch(`${API_URL}/stats?period=${period}`)
-      .then((res) => res.json())
-      .then((data) => setStats(data))
-      .finally(() => setLoading(false));
-  }, [period]);
-
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
       <header className="mb-4">
-        <Link to="/" className="text-sm">
+        <button
+          type="button"
+          onClick={() => router.history.back()}
+          className="text-sm text-[#99f] hover:underline cursor-pointer"
+        >
           &larr; Back
-        </Link>
+        </button>
         <h1 className="mt-4 mb-1">Global Statistics</h1>
       </header>
 

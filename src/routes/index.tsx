@@ -1,5 +1,6 @@
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Settings, Shield, Users } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -107,8 +108,30 @@ function SettingsDropdown({
 }
 
 function App() {
-  const [data, setData] = useState<GameServer[]>();
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
+  const { data, isLoading: loading } = useQuery({
+    queryKey: ["servers"],
+    queryFn: () =>
+      fetch(`${API_URL}/servers`).then(
+        (res) => res.json() as Promise<GameServer[]>,
+      ),
+  });
+
+  const prefetchServer = (ip: string, port: string) => {
+    queryClient.prefetchQuery({
+      queryKey: ["server", ip, port],
+      queryFn: () =>
+        fetch(`${API_URL}/servers/${ip}/${port}`).then((res) => res.json()),
+    });
+    queryClient.prefetchQuery({
+      queryKey: ["serverStats", ip, port, "week"],
+      queryFn: () =>
+        fetch(`${API_URL}/servers/${ip}/${port}/stats?period=week`).then(
+          (res) => res.json(),
+        ),
+    });
+  };
+
   const [showStatus, setShowStatus] = useState(() => {
     if (typeof document === "undefined") return false;
     const saved = document.cookie
@@ -145,12 +168,6 @@ function App() {
   useEffect(() => {
     setCookie("showOffline", JSON.stringify(showOffline));
   }, [showOffline]);
-
-  useEffect(() => {
-    fetch(`${API_URL}/servers`)
-      .then((data) => data.json().then((json) => setData(json)))
-      .finally(() => setLoading(false));
-  }, []);
 
   useEffect(() => {
     document.title = "SS13 Hub";
@@ -417,6 +434,8 @@ function App() {
                         to="/s/$ip/$port"
                         params={{ ip, port }}
                         className="btn"
+                        onMouseEnter={() => prefetchServer(ip, port)}
+                        onTouchStart={() => prefetchServer(ip, port)}
                       >
                         Info
                       </Link>
