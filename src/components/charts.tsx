@@ -17,6 +17,11 @@ type HistoryPoint = {
   players: number;
 };
 
+type TimeDilationPoint = {
+  timestamp: string;
+  time_dilation: number;
+};
+
 type StatsData = {
   avg_players: number;
   max_players: number;
@@ -233,6 +238,71 @@ export function PlayersByHourChart({
             isAnimationActive={false}
           />
         </BarChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+export function TimeDilationChart({
+  history,
+}: {
+  history: TimeDilationPoint[];
+}) {
+  const data = history.map((point) => {
+    const date = parseAsUTC(point.timestamp);
+    return {
+      time: date.toLocaleString(undefined, {
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+      timeDilation: Math.round(point.time_dilation * 100) / 100,
+    };
+  });
+
+  if (data.length === 0) return null;
+
+  return (
+    <div className="panel p-4">
+      <h2 className="dim mb-3">Time Dilation</h2>
+      <ResponsiveContainer width="100%" height={200}>
+        <AreaChart data={data}>
+          <XAxis
+            dataKey="time"
+            tick={{ fill: "#646464", fontSize: 10 }}
+            axisLine={{ stroke: "#393639" }}
+            tickLine={false}
+            interval="preserveStartEnd"
+            minTickGap={50}
+          />
+          <YAxis
+            tick={{ fill: "#646464", fontSize: 12 }}
+            axisLine={{ stroke: "#393639" }}
+            tickLine={false}
+            width={40}
+          />
+          <Tooltip
+            cursor={{ stroke: "#4ade80", strokeWidth: 1 }}
+            contentStyle={{
+              background: "#161618",
+              border: "1px solid #393639",
+              borderRadius: 5,
+              fontSize: 12,
+            }}
+            labelStyle={{ color: "#d4d4d4" }}
+            itemStyle={{ color: "#4ade80" }}
+            formatter={(value) => [`${value}%`, "Time Dilation"]}
+          />
+          <Area
+            type="monotone"
+            dataKey="timeDilation"
+            stroke="#4ade80"
+            fill="#4ade80"
+            fillOpacity={0.2}
+            isAnimationActive={false}
+          />
+        </AreaChart>
       </ResponsiveContainer>
     </div>
   );

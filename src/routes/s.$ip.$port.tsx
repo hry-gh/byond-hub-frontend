@@ -8,6 +8,7 @@ import {
   PlayersByDayChart,
   PlayersByHourChart,
   StatsOverview,
+  TimeDilationChart,
 } from "../components/charts";
 import type { GameServer } from "../types";
 import { formatDuration, formatShuttleTimer } from "../utils";
@@ -23,6 +24,11 @@ type HistoryPoint = {
   players: number;
 };
 
+type TimeDilationPoint = {
+  timestamp: string;
+  time_dilation: number;
+};
+
 type ServerStats = {
   period: Period;
   total_records: number;
@@ -32,6 +38,9 @@ type ServerStats = {
   weekday_averages: number[];
   hourly_averages: number[];
   history: HistoryPoint[];
+  time_dilation?: {
+    history: TimeDilationPoint[];
+  };
 };
 
 const securityColors = {
@@ -43,9 +52,12 @@ const securityColors = {
 
 function RouteComponent() {
   const { ip, port } = useParams({ from: "/s/$ip/$port" });
+
   const router = useRouter();
+
   const [period, setPeriod] = useState<Period>("week");
   const [showFullTopic, setShowFullTopic] = useState(false);
+  const [showPerfStats, setShowPerfStats] = useState(false);
 
   const { data: server } = useQuery({
     queryKey: ["server", ip, port],
@@ -210,7 +222,7 @@ function RouteComponent() {
         </div>
       )}
 
-      <div className="flex gap-2 mb-6">
+      <div className="flex gap-2 mb-6 items-center">
         {(["day", "week", "month", "year", "all"] as Period[]).map((p) => (
           <button
             key={p}
@@ -221,6 +233,21 @@ function RouteComponent() {
             {p}
           </button>
         ))}
+        {stats?.time_dilation?.history &&
+          stats.time_dilation.history.length > 0 && (
+            <button
+              type="button"
+              onClick={() => setShowPerfStats(!showPerfStats)}
+              className="btn ml-auto"
+              style={
+                showPerfStats
+                  ? { backgroundColor: "#4ade80", color: "#000" }
+                  : {}
+              }
+            >
+              Performance Stats
+            </button>
+          )}
       </div>
 
       {initialLoading ? (
@@ -231,6 +258,11 @@ function RouteComponent() {
         <div className="space-y-6">
           <StatsOverview stats={stats} />
           <PlayerHistoryChart history={stats.history} />
+          {showPerfStats &&
+            stats.time_dilation?.history &&
+            stats.time_dilation.history.length > 0 && (
+              <TimeDilationChart history={stats.time_dilation.history} />
+            )}
           <PlayersByDayChart weekdayAverages={stats.weekday_averages} />
           <PlayersByHourChart hourlyAverages={stats.hourly_averages} />
         </div>
