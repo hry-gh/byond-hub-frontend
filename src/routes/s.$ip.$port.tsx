@@ -245,7 +245,7 @@ function RouteComponent() {
                   : {}
               }
             >
-              Performance Stats
+              performance
             </button>
           )}
       </div>
@@ -257,11 +257,14 @@ function RouteComponent() {
       ) : (
         <div className="space-y-6">
           <StatsOverview stats={stats} />
-          <PlayerHistoryChart history={stats.history} />
+          <PlayerHistoryChart history={stats.history} period={period} />
           {showPerfStats &&
             stats.time_dilation?.history &&
             stats.time_dilation.history.length > 0 && (
-              <TimeDilationChart history={stats.time_dilation.history} />
+              <TimeDilationChart
+                history={stats.time_dilation.history}
+                period={period}
+              />
             )}
           <PlayersByDayChart weekdayAverages={stats.weekday_averages} />
           <PlayersByHourChart hourlyAverages={stats.hourly_averages} />

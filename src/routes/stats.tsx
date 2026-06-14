@@ -80,7 +80,7 @@ function StatsPage() {
       ) : (
         <div className="space-y-6">
           <StatsOverview stats={stats} />
-          <PlayerHistoryChart history={stats.history} />
+          <PlayerHistoryChart history={stats.history} period={period} />
           <PlayersByDayChart weekdayAverages={stats.weekday_averages} />
           <PlayersByHourChart hourlyAverages={stats.hourly_averages} />
         </div>
